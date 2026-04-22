@@ -54,4 +54,4 @@
 
 Важно: текущий `publish` работает в safe dry-run режиме и не отправляет реальные ответы в WB.
 
-При `429 Too Many Requests` со стороны WB ingest/backfill теперь завершает шаг мягко: пишет `sync_state` и `health_event`, не делает грубый crash процесса.
+При `429 Too Many Requests` со стороны WB клиент делает до 3 попыток с паузой 3 секунды. Если лимит не отпускает, ingest/backfill завершает шаг мягко: пишет `sync_state` и `health_event`, не делает грубый crash процесса.

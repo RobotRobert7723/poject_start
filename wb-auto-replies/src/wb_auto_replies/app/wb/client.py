@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 import httpx
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_fixed
 
 from wb_auto_replies.app.config.settings import get_settings
 from wb_auto_replies.app.wb.schemas import WbApiRequest, WbApiResponse
@@ -73,8 +73,8 @@ class BaseWbFeedbackClient:
 
     @retry(
         retry=retry_if_exception_type((httpx.HTTPError, WbRateLimitError)),
-        wait=wait_exponential(multiplier=1, min=1, max=20),
-        stop=stop_after_attempt(get_settings().wb_max_retries),
+        wait=wait_fixed(3),
+        stop=stop_after_attempt(3),
         reraise=True,
     )
     def fetch_feedbacks(self, request: WbApiRequest) -> WbApiResponse:
