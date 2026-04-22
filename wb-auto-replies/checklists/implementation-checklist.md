@@ -35,7 +35,7 @@
 - [x] implement separate sync cursor/state per shop and per API
 - [x] implement sync state storage
 - [x] prove idempotent re-run behavior
-- [ ] verify actual WB API field mapping against docs/examples
+- [x] verify actual WB API field mapping against docs/examples
 
 ## Classification and enrichment
 - [ ] implement karmic vs real classification
