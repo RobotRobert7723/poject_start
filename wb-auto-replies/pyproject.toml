@@ -16,6 +16,9 @@ dependencies = [
   "openai>=1.30",
 ]
 
+[project.scripts]
+wb-auto-replies = "wb_auto_replies.app.jobs.runner:main"
+
 [project.optional-dependencies]
 dev = [
   "pytest>=8.2",

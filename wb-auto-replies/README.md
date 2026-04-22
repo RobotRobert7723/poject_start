@@ -39,4 +39,14 @@
 
 ## Статус
 
-Проект открыт. Сейчас этап: проектирование и подготовка плана реализации.
+Проект открыт. Сейчас этап: реализация core foundation и safe dry-run pipeline.
+
+## CLI jobs
+
+После установки проекта доступна команда:
+
+- `wb-auto-replies backfill --shop-id <id> --take 50 --skip 0`
+- `wb-auto-replies draft --shop-id <id> --take 50 --skip 0`
+- `wb-auto-replies publish --shop-id <id>`
+
+Важно: текущий `publish` работает в safe dry-run режиме и не отправляет реальные ответы в WB.
