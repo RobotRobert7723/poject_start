@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import time
+
 from sqlalchemy import select
 
 from wb_auto_replies.app.config.settings import get_settings
@@ -45,6 +47,7 @@ class JobService:
                 skip += batch_size
                 if batch_count < batch_size:
                     break
+                time.sleep(3)
 
     def run_draft(self, *, shop_id: int) -> None:
         with SessionLocal() as db:
