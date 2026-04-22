@@ -38,15 +38,15 @@
 - [x] verify actual WB API field mapping against docs/examples
 
 ## Classification and enrichment
-- [ ] implement karmic vs real classification
-- [ ] implement name safety analysis
-- [ ] implement strict fallback to `Здравствуйте!` on any name uncertainty
-- [ ] implement safe salutation generation
-- [ ] support parent/child feedback links
-- [ ] support feedback versioning/is_latest
-- [ ] detect changed feedbacks and mark for regeneration
-- [ ] detect photo/video presence
-- [ ] persist media metadata
+- [x] implement karmic vs real classification
+- [x] implement name safety analysis
+- [x] implement strict fallback to `Здравствуйте!` on any name uncertainty
+- [x] implement safe salutation generation
+- [x] support parent/child feedback links
+- [x] support feedback versioning/is_latest
+- [x] detect changed feedbacks and mark for regeneration
+- [x] detect photo/video presence
+- [x] persist media metadata
 
 ## Draft generation
 - [ ] implement karmic reply rules lookup

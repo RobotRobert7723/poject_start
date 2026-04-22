@@ -41,7 +41,7 @@ class BaseWbFeedbackClient:
         if request.order:
             params["order"] = request.order
         if request.is_answered is not None:
-            params["isAnswered"] = str(request.is_answered).lower()
+            params["isAnswered"] = request.is_answered
         if request.date_from is not None:
             params["dateFrom"] = request.date_from.astimezone(UTC).isoformat()
         if request.date_to is not None:
