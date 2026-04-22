@@ -67,13 +67,13 @@
 - [x] include media summary in GPT context
 
 ## Publish pipeline
-- [ ] implement WB answer publish client
-- [ ] implement draft eligibility checks
-- [ ] implement latest-version-only publish checks
-- [ ] implement publish mode gating
+- [x] implement WB answer publish client
+- [x] implement draft eligibility checks
+- [x] implement latest-version-only publish checks
+- [x] implement publish mode gating
 - [ ] implement retry/error handling
-- [ ] persist publication audit trail
-- [ ] prevent duplicate publish behavior
+- [x] persist publication audit trail
+- [x] prevent duplicate publish behavior
 
 ## Health monitoring
 - [ ] define health metrics per component
