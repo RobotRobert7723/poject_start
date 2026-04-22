@@ -71,7 +71,7 @@
 - [x] implement draft eligibility checks
 - [x] implement latest-version-only publish checks
 - [x] implement publish mode gating
-- [ ] implement retry/error handling
+- [x] implement retry/error handling
 - [x] persist publication audit trail
 - [x] prevent duplicate publish behavior
 

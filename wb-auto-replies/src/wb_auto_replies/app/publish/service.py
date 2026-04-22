@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from wb_auto_replies.app.db.models import Feedback, ReplyDraft, ReplyPublication, Shop
-from wb_auto_replies.app.publish.client import PublishResult, WbPublishClient
+from wb_auto_replies.app.publish.client import PublishClientError, PublishResult, WbPublishClient
 
 
 class PublishEligibilityError(Exception):
@@ -17,7 +17,7 @@ class PublishService:
     def __init__(self, client: WbPublishClient | None = None) -> None:
         self.client = client or WbPublishClient()
 
-    def validate_publish(self, shop: Shop, feedback: Feedback, draft: ReplyDraft) -> None:
+    def validate_publish(self, db: Session, shop: Shop, feedback: Feedback, draft: ReplyDraft) -> None:
         if shop.mode != "publish":
             raise PublishEligibilityError("Shop is not in publish mode")
         if not feedback.is_latest:
@@ -36,8 +36,12 @@ class PublishService:
             raise PublishEligibilityError("Feedback already has published reply")
 
     def publish(self, db: Session, shop: Shop, feedback: Feedback, draft: ReplyDraft) -> ReplyPublication:
-        self.validate_publish(shop, feedback, draft)
-        result = self.client.publish_reply(feedback, draft)
+        self.validate_publish(db, shop, feedback, draft)
+        try:
+            result = self.client.publish_reply(feedback, draft)
+        except PublishClientError as exc:
+            result = PublishResult(status="failed", response_payload=None, error_text=str(exc))
+
         publication = ReplyPublication(
             shop_id=shop.shop_id,
             feedback_id=feedback.id,

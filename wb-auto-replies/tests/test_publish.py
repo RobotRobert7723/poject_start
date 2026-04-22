@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from wb_auto_replies.app.db.base import Base
 from wb_auto_replies.app.db.models import Feedback, ReplyDraft, Shop
+from wb_auto_replies.app.publish.client import PublishClientError, WbPublishClient
 from wb_auto_replies.app.publish.service import PublishEligibilityError, PublishService
 
 
@@ -107,6 +108,11 @@ def test_publish_is_blocked_when_shop_not_in_publish_mode() -> None:
         PublishService().publish(db, shop, feedback, draft)
 
 
+class FailingPublishClient(WbPublishClient):
+    def publish_reply(self, feedback: Feedback, draft: ReplyDraft):  # type: ignore[override]
+        raise PublishClientError("temporary publish failure")
+
+
 def test_publish_records_dry_run_publication() -> None:
     db = make_session()
     shop = create_shop(db, mode="publish")
@@ -117,3 +123,15 @@ def test_publish_records_dry_run_publication() -> None:
 
     assert publication.publish_status == "dry_run"
     assert publication.wb_response_json is not None
+
+
+def test_publish_records_failure_when_client_errors() -> None:
+    db = make_session()
+    shop = create_shop(db, mode="publish")
+    feedback = create_feedback(db, shop.shop_id)
+    draft = create_draft(db, shop.shop_id, feedback.id)
+
+    publication = PublishService(client=FailingPublishClient()).publish(db, shop, feedback, draft)
+
+    assert publication.publish_status == "failed"
+    assert publication.error_text == "temporary publish failure"
