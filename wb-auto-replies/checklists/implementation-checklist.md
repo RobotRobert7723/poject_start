@@ -61,10 +61,10 @@
 - [x] ensure draft pipeline can run in debug/dry-run mode without WB publication
 
 ## Media analysis
-- [ ] design vision summary contract
-- [ ] implement photo analysis flow
-- [ ] persist vision summary and confidence
-- [ ] include media summary in GPT context
+- [x] design vision summary contract
+- [x] implement photo analysis flow
+- [x] persist vision summary and confidence
+- [x] include media summary in GPT context
 
 ## Publish pipeline
 - [ ] implement WB answer publish client

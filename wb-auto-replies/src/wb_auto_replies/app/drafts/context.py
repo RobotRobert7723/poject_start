@@ -3,7 +3,7 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from wb_auto_replies.app.db.models import Feedback, SemanticReplyTemplate
+from wb_auto_replies.app.db.models import Feedback, FeedbackMedia, SemanticReplyTemplate
 
 
 class DraftContextService:
@@ -23,6 +23,18 @@ class DraftContextService:
         )
         rows = db.scalars(stmt).all()
         return [row.text for row in rows if row.text]
+
+    def get_media_summary(self, db: Session, feedback: Feedback) -> str | None:
+        stmt = (
+            select(FeedbackMedia)
+            .where(FeedbackMedia.feedback_id == feedback.id)
+            .order_by(FeedbackMedia.id.asc())
+        )
+        media_items = db.scalars(stmt).all()
+        summaries = [item.vision_summary for item in media_items if item.vision_summary]
+        if summaries:
+            return summaries[0]
+        return None
 
     def get_semantic_templates(self, db: Session, shop_id: int, limit: int = 10) -> list[str]:
         stmt = (

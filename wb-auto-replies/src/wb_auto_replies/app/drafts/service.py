@@ -73,7 +73,7 @@ class DraftGenerationService:
     def _generate_real_draft(self, db: Session, feedback: Feedback, mode: str) -> ReplyDraft:
         article_context = self.context_service.get_article_context(db, feedback)
         semantic_templates = self.context_service.get_semantic_templates(db, feedback.shop_id)
-        media_summary = None
+        media_summary = self.context_service.get_media_summary(db, feedback)
 
         request = GptGenerationRequest(
             system_prompt=build_real_review_system_prompt(),
