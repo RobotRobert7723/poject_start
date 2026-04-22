@@ -1,44 +1,50 @@
 # Implementation Checklist
 
 ## Project setup
-- [ ] confirm final tech stack (Python recommended)
-- [ ] choose packaging/dependency tool
-- [ ] create app skeleton
-- [ ] create environment variable strategy
-- [ ] choose migrations tool
+- [x] confirm final tech stack (Python recommended)
+- [x] choose packaging/dependency tool
+- [x] create app skeleton
+- [x] create environment variable strategy
+- [x] choose migrations tool
 
 ## Database
-- [ ] create initial schema
-- [ ] create shops table
-- [ ] create feedbacks_raw table
-- [ ] create feedbacks table
-- [ ] create feedback_media table
-- [ ] create sync_state table
-- [ ] create reply_drafts table
-- [ ] create reply_publications table
-- [ ] create karmic_reply_rules table
-- [ ] create semantic_reply_templates table
-- [ ] create health_events table
-- [ ] create health_state table
-- [ ] add indexes and constraints
+- [x] create initial schema
+- [x] create shops table
+- [x] create feedbacks_raw table
+- [x] create feedbacks table
+- [x] create feedback_media table
+- [x] create sync_state table
+- [x] create reply_drafts table
+- [x] create reply_publications table
+- [x] create karmic_reply_rules table
+- [x] create semantic_reply_templates table
+- [x] create health_events table
+- [x] create health_state table
+- [x] store raw WB payloads for both archive and active APIs
+- [x] store current answer state and published answer history
+- [x] add indexes and constraints
 
 ## WB integration
-- [ ] implement archive feedback API client
-- [ ] implement active feedback API client
-- [ ] implement retry policy
-- [ ] implement WB rate-limit handling
+- [x] implement archive feedback API client
+- [x] implement active feedback API client
+- [x] implement retry policy
+- [x] implement WB rate-limit handling
 - [ ] persist raw payloads
-- [ ] normalize archive feedbacks
-- [ ] normalize active feedbacks
-- [ ] implement sync state storage
+- [x] normalize archive feedbacks
+- [x] normalize active feedbacks
+- [x] implement separate sync cursor/state per shop and per API
+- [x] implement sync state storage
 - [ ] prove idempotent re-run behavior
+- [ ] verify actual WB API field mapping against docs/examples
 
 ## Classification and enrichment
 - [ ] implement karmic vs real classification
 - [ ] implement name safety analysis
+- [ ] implement strict fallback to `Здравствуйте!` on any name uncertainty
 - [ ] implement safe salutation generation
 - [ ] support parent/child feedback links
 - [ ] support feedback versioning/is_latest
+- [ ] detect changed feedbacks and mark for regeneration
 - [ ] detect photo/video presence
 - [ ] persist media metadata
 
@@ -52,6 +58,7 @@
 - [ ] save prompt/context snapshots
 - [ ] add response validation rules
 - [ ] add anti-repeat safeguards
+- [ ] ensure draft pipeline can run in debug/dry-run mode without WB publication
 
 ## Media analysis
 - [ ] design vision summary contract
@@ -62,6 +69,7 @@
 ## Publish pipeline
 - [ ] implement WB answer publish client
 - [ ] implement draft eligibility checks
+- [ ] implement latest-version-only publish checks
 - [ ] implement publish mode gating
 - [ ] implement retry/error handling
 - [ ] persist publication audit trail
@@ -74,6 +82,7 @@
 - [ ] detect stale syncs
 - [ ] detect stuck drafts
 - [ ] detect publish failures
+- [ ] detect media analysis backlog
 - [ ] prepare basic operator SQL queries
 
 ## Readiness
