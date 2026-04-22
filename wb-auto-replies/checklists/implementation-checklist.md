@@ -49,16 +49,16 @@
 - [x] persist media metadata
 
 ## Draft generation
-- [ ] implement karmic reply rules lookup
-- [ ] generate karmic drafts without GPT
-- [ ] implement article context lookup (last 10 reviews)
-- [ ] implement semantic template lookup
-- [ ] design GPT prompt contract
-- [ ] implement GPT draft generation for real reviews
-- [ ] save prompt/context snapshots
-- [ ] add response validation rules
+- [x] implement karmic reply rules lookup
+- [x] generate karmic drafts without GPT
+- [x] implement article context lookup (last 10 reviews)
+- [x] implement semantic template lookup
+- [x] design GPT prompt contract
+- [x] implement GPT draft generation for real reviews
+- [x] save prompt/context snapshots
+- [x] add response validation rules
 - [ ] add anti-repeat safeguards
-- [ ] ensure draft pipeline can run in debug/dry-run mode without WB publication
+- [x] ensure draft pipeline can run in debug/dry-run mode without WB publication
 
 ## Media analysis
 - [ ] design vision summary contract
