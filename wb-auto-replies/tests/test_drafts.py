@@ -137,3 +137,33 @@ def test_generate_real_draft_uses_gpt_and_context() -> None:
     assert draft.context_snapshot is not None
     assert draft.context_snapshot["article_context"] == ["Прошлый отзыв"]
     assert draft.context_snapshot["semantic_templates"] == ["Спасибо за добрые слова и доверие."]
+
+
+def test_anti_repeat_marks_exact_repeat() -> None:
+    db = make_session()
+    shop = create_shop(db)
+    feedback = create_feedback(db, shop.shop_id, feedback_kind="real", nm_id=100)
+    db.add(
+        SemanticReplyTemplate(
+            shop_id=shop.shop_id,
+            category_key="positive",
+            title="Positive",
+            description=None,
+            template_text="Спасибо за добрые слова и доверие.",
+            active=True,
+            priority=1,
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
+        )
+    )
+    db.commit()
+
+    service = DraftGenerationService(gpt_client=StubGptClient())
+    first = service.generate_for_feedback(db, feedback)
+    db.add(first)
+    db.commit()
+
+    second = service.generate_for_feedback(db, feedback)
+
+    assert second.quality_flags_json is not None
+    assert second.quality_flags_json["exact_repeat"] is True

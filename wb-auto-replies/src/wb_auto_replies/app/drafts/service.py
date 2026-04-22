@@ -7,6 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from wb_auto_replies.app.db.models import Feedback, KarmicReplyRule, ReplyDraft
+from wb_auto_replies.app.drafts.anti_repeat import AntiRepeatService
 from wb_auto_replies.app.drafts.context import DraftContextService
 from wb_auto_replies.app.drafts.validators import DraftValidator
 from wb_auto_replies.app.gpt.client import GptClient
@@ -20,10 +21,12 @@ class DraftGenerationService:
         context_service: DraftContextService | None = None,
         validator: DraftValidator | None = None,
         gpt_client: GptClient | None = None,
+        anti_repeat_service: AntiRepeatService | None = None,
     ) -> None:
         self.context_service = context_service or DraftContextService()
         self.validator = validator or DraftValidator()
         self.gpt_client = gpt_client or GptClient()
+        self.anti_repeat_service = anti_repeat_service or AntiRepeatService()
 
     def generate_for_feedback(self, db: Session, feedback: Feedback, mode: str = "draft") -> ReplyDraft:
         if feedback.feedback_kind == "karmic":
@@ -49,6 +52,8 @@ class DraftGenerationService:
             raise ValueError("No karmic reply rule configured")
 
         text = self.validator.validate(rule.reply_text)
+        recent_drafts = self.anti_repeat_service.get_recent_drafts(db, feedback)
+        text, repeat_flags = self.anti_repeat_service.ensure_not_repeated(text, recent_drafts)
         draft = ReplyDraft(
             shop_id=feedback.shop_id,
             feedback_id=feedback.id,
@@ -58,7 +63,7 @@ class DraftGenerationService:
             prompt_snapshot={"rule_id": rule.id, "generator": "template"},
             context_snapshot={"stars": feedback.stars},
             draft_text=text,
-            quality_flags_json={"path": "karmic"},
+            quality_flags_json={"path": "karmic", **repeat_flags},
             status="generated",
             created_at=datetime.now(UTC),
         )
@@ -86,6 +91,8 @@ class DraftGenerationService:
         result = self.gpt_client.generate(request)
         text = self.validator.validate(result.text)
         text = self.validator.prevent_unsafe_name(text, feedback.safe_name)
+        recent_drafts = self.anti_repeat_service.get_recent_drafts(db, feedback)
+        text, repeat_flags = self.anti_repeat_service.ensure_not_repeated(text, recent_drafts)
 
         draft = ReplyDraft(
             shop_id=feedback.shop_id,
@@ -100,7 +107,7 @@ class DraftGenerationService:
                 "media_summary": media_summary,
             },
             draft_text=text,
-            quality_flags_json={"path": "real"},
+            quality_flags_json={"path": "real", **repeat_flags},
             status="generated",
             created_at=datetime.now(UTC),
         )

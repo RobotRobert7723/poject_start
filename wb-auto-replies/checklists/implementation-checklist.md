@@ -57,7 +57,7 @@
 - [x] implement GPT draft generation for real reviews
 - [x] save prompt/context snapshots
 - [x] add response validation rules
-- [ ] add anti-repeat safeguards
+- [x] add anti-repeat safeguards
 - [x] ensure draft pipeline can run in debug/dry-run mode without WB publication
 
 ## Media analysis
