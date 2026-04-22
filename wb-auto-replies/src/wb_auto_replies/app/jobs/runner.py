@@ -10,11 +10,14 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="wb-auto-replies")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    for command in ("backfill", "draft", "publish"):
-        job = subparsers.add_parser(command)
-        job.add_argument("--shop-id", type=int, required=True)
-        job.add_argument("--take", type=int, default=50)
-        job.add_argument("--skip", type=int, default=0)
+    backfill = subparsers.add_parser("backfill")
+    backfill.add_argument("--shop-id", type=int, required=True)
+
+    draft = subparsers.add_parser("draft")
+    draft.add_argument("--shop-id", type=int, required=True)
+
+    publish = subparsers.add_parser("publish")
+    publish.add_argument("--shop-id", type=int, required=True)
     return parser
 
 
@@ -24,9 +27,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     service = JobService()
 
     if args.command == "backfill":
-        service.run_backfill(shop_id=args.shop_id, take=args.take, skip=args.skip)
+        service.run_backfill(shop_id=args.shop_id)
     elif args.command == "draft":
-        service.run_draft(shop_id=args.shop_id, take=args.take, skip=args.skip)
+        service.run_draft(shop_id=args.shop_id)
     elif args.command == "publish":
         service.run_publish(shop_id=args.shop_id)
     return 0

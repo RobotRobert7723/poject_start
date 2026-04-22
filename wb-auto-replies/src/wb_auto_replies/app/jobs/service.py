@@ -22,17 +22,39 @@ class JobService:
         self.draft_service = DraftGenerationService()
         self.publish_service = PublishService()
 
-    def run_backfill(self, *, shop_id: int, take: int, skip: int) -> None:
+    def run_backfill(self, *, shop_id: int) -> None:
         with SessionLocal() as db:
             shop = self._get_shop(db, shop_id)
-            request = WbApiRequest(token=shop.wb_token, take=take, skip=skip)
-            self.ingest_service.fetch_and_store(db, shop_id=shop.shop_id, request=request, client=ArchiveFeedbacksClient())
-            db.commit()
+            settings = (shop.settings_json or {}).get("backfill", {})
+            if not settings.get("enabled", True):
+                return
+            batch_size = int(settings.get("batch_size", 100))
+            max_total = int(settings.get("max_total", batch_size))
+            start_skip = int(settings.get("start_skip", 0))
 
-    def run_draft(self, *, shop_id: int, take: int, skip: int) -> None:
+            loaded = 0
+            skip = start_skip
+            while loaded < max_total:
+                request = WbApiRequest(token=shop.wb_token, take=batch_size, skip=skip)
+                normalized = self.ingest_service.fetch_and_store(db, shop_id=shop.shop_id, request=request, client=ArchiveFeedbacksClient())
+                db.commit()
+                batch_count = len(normalized)
+                if batch_count == 0:
+                    break
+                loaded += batch_count
+                skip += batch_size
+                if batch_count < batch_size:
+                    break
+
+    def run_draft(self, *, shop_id: int) -> None:
         with SessionLocal() as db:
             shop = self._get_shop(db, shop_id)
-            request = WbApiRequest(token=shop.wb_token, take=take, skip=skip)
+            settings = (shop.settings_json or {}).get("draft", {})
+            if not settings.get("enabled", True):
+                return
+            batch_size = int(settings.get("batch_size", 100))
+            start_skip = int(settings.get("start_skip", 0))
+            request = WbApiRequest(token=shop.wb_token, take=batch_size, skip=start_skip)
             self.ingest_service.fetch_and_store(db, shop_id=shop.shop_id, request=request, client=ActiveFeedbacksClient())
             feedbacks = db.execute(
                 select(Feedback).where(Feedback.shop_id == shop.shop_id, Feedback.is_latest.is_(True))

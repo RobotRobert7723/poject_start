@@ -17,6 +17,7 @@ class SeedService:
         wb_token: str,
         mode: str = "draft",
         gpt_model: str = "gpt-4.1-mini",
+        settings_json: dict | None = None,
     ) -> Shop:
         stmt = select(Shop).where(Shop.shop_name == shop_name)
         shop = db.execute(stmt).scalar_one_or_none()
@@ -28,7 +29,19 @@ class SeedService:
                 active=True,
                 mode=mode,
                 gpt_model=gpt_model,
-                settings_json=None,
+                settings_json=settings_json or {
+                    "backfill": {
+                        "enabled": True,
+                        "batch_size": 100,
+                        "max_total": 1000,
+                        "start_skip": 0,
+                    },
+                    "draft": {
+                        "enabled": True,
+                        "batch_size": 100,
+                        "start_skip": 0,
+                    },
+                },
                 created_at=now,
                 updated_at=now,
             )
@@ -37,6 +50,8 @@ class SeedService:
             shop.wb_token = wb_token
             shop.mode = mode
             shop.gpt_model = gpt_model
+            if settings_json is not None:
+                shop.settings_json = settings_json
             shop.updated_at = now
         db.flush()
         return shop

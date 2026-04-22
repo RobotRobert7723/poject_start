@@ -45,10 +45,12 @@
 
 После установки проекта доступны команды:
 
-- `wb-auto-replies backfill --shop-id <id> --take 50 --skip 0`
-- `wb-auto-replies draft --shop-id <id> --take 50 --skip 0`
+- `wb-auto-replies backfill --shop-id <id>`
+- `wb-auto-replies draft --shop-id <id>`
 - `wb-auto-replies publish --shop-id <id>`
 - `wb-auto-replies-seed --shop-name <name> --wb-token <token> --mode draft --gpt-model gpt-4.1-mini`
+
+Параметры оркестрации (`batch_size`, `max_total`, `start_skip`) читаются системой из `shops.settings_json`.
 
 Важно: текущий `publish` работает в safe dry-run режиме и не отправляет реальные ответы в WB.
 
