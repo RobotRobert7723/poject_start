@@ -1,3 +1,24 @@
+Metadata-Version: 2.4
+Name: wb-auto-replies
+Version: 0.1.0
+Summary: Code-first backend for Wildberries automated review replies
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: sqlalchemy>=2.0
+Requires-Dist: alembic>=1.13
+Requires-Dist: psycopg[binary]>=3.2
+Requires-Dist: pydantic>=2.7
+Requires-Dist: pydantic-settings>=2.2
+Requires-Dist: httpx>=0.27
+Requires-Dist: tenacity>=8.2
+Requires-Dist: python-json-logger>=2.0
+Requires-Dist: openai>=1.30
+Provides-Extra: dev
+Requires-Dist: pytest>=8.2; extra == "dev"
+Requires-Dist: pytest-cov>=5.0; extra == "dev"
+Requires-Dist: ruff>=0.5; extra == "dev"
+Requires-Dist: mypy>=1.10; extra == "dev"
+
 # wb-auto-replies
 
 Модульная code-first система автоматической обработки отзывов Wildberries для нескольких магазинов.
@@ -51,5 +72,3 @@
 - `wb-auto-replies-seed --shop-name <name> --wb-token <token> --mode draft --gpt-model gpt-4.1-mini`
 
 Важно: текущий `publish` работает в safe dry-run режиме и не отправляет реальные ответы в WB.
-
-При `429 Too Many Requests` со стороны WB ingest/backfill теперь завершает шаг мягко: пишет `sync_state` и `health_event`, не делает грубый crash процесса.

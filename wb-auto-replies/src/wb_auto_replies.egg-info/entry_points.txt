@@ -1,0 +1,3 @@
+[console_scripts]
+wb-auto-replies = wb_auto_replies.app.jobs.runner:main
+wb-auto-replies-seed = wb_auto_replies.app.config.seed_runner:main
