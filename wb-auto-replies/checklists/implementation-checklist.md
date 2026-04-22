@@ -86,8 +86,8 @@
 - [x] prepare basic operator SQL queries
 
 ## Readiness
-- [ ] run end-to-end in backfill mode
-- [ ] run end-to-end in draft mode
-- [ ] verify no publish in draft mode
-- [ ] verify publish path in controlled test
-- [ ] validate multi-store isolation
+- [x] run end-to-end in backfill mode
+- [x] run end-to-end in draft mode
+- [x] verify no publish in draft mode
+- [x] verify publish path in controlled test
+- [x] validate multi-store isolation
