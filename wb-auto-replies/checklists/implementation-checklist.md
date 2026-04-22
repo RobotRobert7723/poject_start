@@ -29,12 +29,12 @@
 - [x] implement active feedback API client
 - [x] implement retry policy
 - [x] implement WB rate-limit handling
-- [ ] persist raw payloads
+- [x] persist raw payloads
 - [x] normalize archive feedbacks
 - [x] normalize active feedbacks
 - [x] implement separate sync cursor/state per shop and per API
 - [x] implement sync state storage
-- [ ] prove idempotent re-run behavior
+- [x] prove idempotent re-run behavior
 - [ ] verify actual WB API field mapping against docs/examples
 
 ## Classification and enrichment

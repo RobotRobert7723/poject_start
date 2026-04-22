@@ -6,6 +6,7 @@ from typing import Protocol
 from sqlalchemy.orm import Session
 
 from wb_auto_replies.app.ingest.normalize import normalize_feedback
+from wb_auto_replies.app.ingest.repository import IngestRepository
 from wb_auto_replies.app.ingest.sync_state import SyncStateRepository
 from wb_auto_replies.app.wb.schemas import NormalizedFeedback, WbApiRequest, WbApiResponse
 
@@ -18,10 +19,15 @@ class FetchFeedbacksClient(Protocol):
 
 
 class IngestService:
-    def __init__(self, sync_state_repository: SyncStateRepository | None = None) -> None:
+    def __init__(
+        self,
+        sync_state_repository: SyncStateRepository | None = None,
+        ingest_repository: IngestRepository | None = None,
+    ) -> None:
         self.sync_state_repository = sync_state_repository or SyncStateRepository()
+        self.ingest_repository = ingest_repository or IngestRepository()
 
-    def fetch_and_normalize(
+    def fetch_and_store(
         self,
         db: Session,
         *,
@@ -33,6 +39,19 @@ class IngestService:
         try:
             response = client.fetch_feedbacks(request)
             normalized = [normalize_feedback(client.source_api, item) for item in response.items]
+            for item in normalized:
+                self.ingest_repository.save_raw_payload(
+                    db,
+                    shop_id=shop_id,
+                    normalized=item,
+                    fetched_at=now,
+                )
+                self.ingest_repository.upsert_feedback(
+                    db,
+                    shop_id=shop_id,
+                    normalized=item,
+                    now=now,
+                )
             self.sync_state_repository.mark_success(
                 db,
                 shop_id=shop_id,
