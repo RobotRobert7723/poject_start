@@ -73,7 +73,7 @@ class BaseWbFeedbackClient:
 
     @retry(
         retry=retry_if_exception_type((httpx.HTTPError, WbRateLimitError)),
-        wait=wait_fixed(3),
+        wait=wait_fixed(6),
         stop=stop_after_attempt(3),
         reraise=True,
     )

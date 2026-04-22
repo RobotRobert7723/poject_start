@@ -47,7 +47,7 @@ class JobService:
                 skip += batch_size
                 if batch_count < batch_size:
                     break
-                time.sleep(3)
+                time.sleep(6)
 
     def run_draft(self, *, shop_id: int) -> None:
         with SessionLocal() as db:
