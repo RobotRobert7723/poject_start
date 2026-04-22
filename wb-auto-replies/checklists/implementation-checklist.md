@@ -76,14 +76,14 @@
 - [x] prevent duplicate publish behavior
 
 ## Health monitoring
-- [ ] define health metrics per component
-- [ ] implement health event writer
-- [ ] implement health state updater
-- [ ] detect stale syncs
-- [ ] detect stuck drafts
-- [ ] detect publish failures
-- [ ] detect media analysis backlog
-- [ ] prepare basic operator SQL queries
+- [x] define health metrics per component
+- [x] implement health event writer
+- [x] implement health state updater
+- [x] detect stale syncs
+- [x] detect stuck drafts
+- [x] detect publish failures
+- [x] detect media analysis backlog
+- [x] prepare basic operator SQL queries
 
 ## Readiness
 - [ ] run end-to-end in backfill mode
