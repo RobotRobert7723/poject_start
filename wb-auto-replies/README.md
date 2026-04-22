@@ -43,10 +43,11 @@
 
 ## CLI jobs
 
-После установки проекта доступна команда:
+После установки проекта доступны команды:
 
 - `wb-auto-replies backfill --shop-id <id> --take 50 --skip 0`
 - `wb-auto-replies draft --shop-id <id> --take 50 --skip 0`
 - `wb-auto-replies publish --shop-id <id>`
+- `wb-auto-replies-seed --shop-name <name> --wb-token <token> --mode draft --gpt-model gpt-4.1-mini`
 
 Важно: текущий `publish` работает в safe dry-run режиме и не отправляет реальные ответы в WB.
