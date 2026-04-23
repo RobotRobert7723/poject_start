@@ -39,7 +39,15 @@
 
 ## Статус
 
-Проект открыт. Сейчас этап: реализация core foundation и safe dry-run pipeline.
+Проект в рабочем dry-run состоянии. На сегодня собран и проверен DB-driven pipeline для двух магазинов (`ErLine`, `MMarket`): archive/history ingest, active ingest, enrichment, name safety, karmic template generation, GPT draft path, health tracking и safe publish stub.
+
+Ключевые подтвержденные правила на текущий момент:
+- runtime-параметры jobs читаются из `wb_auto_replies.shops.settings_json`
+- рабочий active sync идет с `isAnswered=false`
+- answered reviews уходят в archive/history слой
+- кармический отзыв определяется по наличию оценки при пустых `text/pros/cons`
+- новый кармический draft создается только если `answer_text_current` отсутствует
+- при любой сомнительности в имени используется только `Здравствуйте!`
 
 ## CLI jobs
 
@@ -55,3 +63,7 @@
 Важно: текущий `publish` работает в safe dry-run режиме и не отправляет реальные ответы в WB.
 
 При `429 Too Many Requests` со стороны WB клиент делает до 3 попыток с паузой 6 секунд. Если лимит не отпускает, ingest/backfill завершает шаг мягко: пишет `sync_state` и `health_event`, не делает грубый crash процесса. Между batch-запросами backfill тоже выдерживается пауза 6 секунд.
+
+Текущий подтвержденный operational snapshot после пересчета данных:
+- `ErLine`: active real = 11, unanswered karmic drafts = 3
+- `MMarket`: active real = 24, unanswered karmic drafts = 207

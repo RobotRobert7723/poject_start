@@ -24,11 +24,12 @@
 ## Job 2. sync_active_feedbacks_job
 
 ### Goal
-Регулярно загружать новые реальные отзывы.
+Регулярно загружать новые безответные active-отзывы из WB.
 
 ### Inputs
 - active feedback API
 - per-shop sync cursor/state
+- explicit `isAnswered=false`
 
 ### Outputs
 - `feedbacks_raw`
@@ -74,7 +75,10 @@
 
 #### Karmic branch
 - no GPT
+- classify karmic by `stars present` + empty `text/pros/cons`
 - select rule from `karmic_reply_rules`
+- use `safe_salutation` with strict fallback to `Здравствуйте!`
+- skip draft generation if `answer_text_current` already exists
 - save draft
 
 #### Real branch

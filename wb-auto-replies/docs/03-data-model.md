@@ -110,6 +110,11 @@ Suggested fields:
 
 Purpose: шаблоны для кармических отзывов.
 
+Current business segmentation:
+- `<4` stars => `stars_from=1`, `stars_to=3`
+- `4` stars => `stars_from=4`, `stars_to=4`
+- `5` stars => `stars_from=5`, `stars_to=5`
+
 Suggested fields:
 - `id` PK
 - `shop_id`
@@ -123,6 +128,11 @@ Suggested fields:
 ### reply_drafts
 
 Purpose: история draft-ответов.
+
+Important current rules:
+- karmic/template drafts are generated only for latest unanswered karmic feedbacks
+- template text starts from `safe_salutation`
+- on doubtful names the salutation is strictly `Здравствуйте!`
 
 Suggested fields:
 - `id` PK

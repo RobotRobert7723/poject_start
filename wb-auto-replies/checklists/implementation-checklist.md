@@ -39,8 +39,10 @@
 
 ## Classification and enrichment
 - [x] implement karmic vs real classification
+- [x] fix karmic classification for active reviews with rating but empty `text/pros/cons`
 - [x] implement name safety analysis
 - [x] implement strict fallback to `Здравствуйте!` on any name uncertainty
+- [x] disable latin-name personalization and other doubtful single-token names
 - [x] implement safe salutation generation
 - [x] support parent/child feedback links
 - [x] support feedback versioning/is_latest
@@ -51,6 +53,7 @@
 ## Draft generation
 - [x] implement karmic reply rules lookup
 - [x] generate karmic drafts without GPT
+- [x] prevent karmic draft generation when WB answer text already exists
 - [x] implement article context lookup (last 10 reviews)
 - [x] implement semantic template lookup
 - [x] design GPT prompt contract

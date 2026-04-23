@@ -5,8 +5,11 @@ from dataclasses import dataclass
 
 
 DEFAULT_SALUTATION = "Здравствуйте!"
-CYRILLIC_NAME_RE = re.compile(r"^[А-ЯЁ][а-яё]{1,29}$")
-LATIN_NAME_RE = re.compile(r"^[A-Z][a-z]{1,29}$")
+CYRILLIC_NAME_RE = re.compile(r"^[А-ЯЁ][а-яё]{2,19}$")
+LATIN_NAME_RE = re.compile(r"^[A-Z][a-z]{2,19}$")
+COMMON_RU_NAMES = {
+    'иван','мария','анна','дмитрий','алексей','елена','ольга','наталья','ирина','алёна','алена','екатерина','анастасия','светлана','татьяна','марина','николай','роман','андрей','андрей','андрей','александра','алина','инна','валентина','зоя','зара','ина'
+}
 BAD_TOKENS = {
     "buyer",
     "client",
@@ -58,14 +61,24 @@ class NameSafetyService:
             return self._fallback("not_single_name")
 
         token = parts[0]
-        if CYRILLIC_NAME_RE.fullmatch(token) or LATIN_NAME_RE.fullmatch(token):
+        lowered_token = token.casefold()
+
+        if token.endswith(('ов','ев','ёв','ин','ын','ский','цкий','ская','цкая','дзе','ян','янц','оглы','улы')):
+            return self._fallback("looks_like_surname")
+
+        if CYRILLIC_NAME_RE.fullmatch(token):
+            if lowered_token not in COMMON_RU_NAMES:
+                return self._fallback("unknown_cyrillic_name")
             return NameSafetyResult(
                 safe_salutation=f"Здравствуйте, {token}!",
                 safe_name=token,
                 confidence=0.95,
                 should_use_name=True,
-                reason="looks_like_real_name",
+                reason="known_ru_name",
             )
+
+        if LATIN_NAME_RE.fullmatch(token):
+            return self._fallback("latin_not_allowed")
 
         return self._fallback("low_confidence")
 

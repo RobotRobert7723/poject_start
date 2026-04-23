@@ -57,7 +57,7 @@ class JobService:
                 return
             batch_size = int(settings.get("batch_size", 100))
             start_skip = int(settings.get("start_skip", 0))
-            request = WbApiRequest(token=shop.wb_token, take=batch_size, skip=start_skip)
+            request = WbApiRequest(token=shop.wb_token, take=batch_size, skip=start_skip, is_answered=False)
             self.ingest_service.fetch_and_store(db, shop_id=shop.shop_id, request=request, client=ActiveFeedbacksClient())
             feedbacks = db.execute(
                 select(Feedback).where(Feedback.shop_id == shop.shop_id, Feedback.is_latest.is_(True))

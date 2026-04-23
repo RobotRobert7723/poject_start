@@ -36,6 +36,18 @@ class DraftGenerationService:
         raise ValueError(f"Unsupported feedback kind: {feedback.feedback_kind}")
 
     def _generate_karmic_draft(self, db: Session, feedback: Feedback, mode: str) -> ReplyDraft:
+        if feedback.answer_text_current and feedback.answer_text_current.strip():
+            raise ValueError("Karmic feedback already has WB answer")
+
+        existing_stmt = select(ReplyDraft).where(
+            ReplyDraft.feedback_id == feedback.id,
+            ReplyDraft.feedback_version_no == feedback.version_no,
+            ReplyDraft.generator_type == "template",
+        )
+        existing = db.execute(existing_stmt).scalar_one_or_none()
+        if existing is not None:
+            return existing
+
         stmt = (
             select(KarmicReplyRule)
             .where(
@@ -51,7 +63,11 @@ class DraftGenerationService:
         if rule is None:
             raise ValueError("No karmic reply rule configured")
 
-        text = self.validator.validate(rule.reply_text)
+        salutation = feedback.safe_salutation or "Здравствуйте!"
+        base_text = rule.reply_text.strip()
+        if base_text.startswith("Здравствуйте!"):
+            base_text = base_text[len("Здравствуйте!"):].strip()
+        text = self.validator.validate(f"{salutation} {base_text}".strip())
         recent_drafts = self.anti_repeat_service.get_recent_drafts(db, feedback)
         text, repeat_flags = self.anti_repeat_service.ensure_not_repeated(text, recent_drafts)
         draft = ReplyDraft(
