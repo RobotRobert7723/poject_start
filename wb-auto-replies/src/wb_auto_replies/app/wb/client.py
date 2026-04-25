@@ -40,7 +40,9 @@ class BaseWbFeedbackClient:
             params["skip"] = request.skip
         if request.order:
             params["order"] = request.order
-        if request.is_answered is not None:
+        if self.source_api == "active":
+            params["isAnswered"] = request.is_answered if request.is_answered is not None else True
+        elif request.is_answered is not None:
             params["isAnswered"] = request.is_answered
         if request.date_from is not None:
             params["dateFrom"] = request.date_from.astimezone(UTC).isoformat()
